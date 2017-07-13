@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Debtwire Highlights
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  try to take over the world!
 // @author       You
 // @match        https://www.debtwire.com/intelligence/view/*
@@ -10,7 +10,7 @@
 
 (function() {
     'use strict';
-
+    
     var highlightedIndex = {
   intelId: 0,
   highlightedParagraphPaths: []
@@ -79,6 +79,7 @@ function toggleHighlight(el) {
   var intelId = getClosest(el.parentNode, 'article').querySelector('.headline-card__main h1').id.split('-')[2]
 
   toggleHighlightElement(closestParagraph)
+  console.log('toggling highlight!');  
 
   return highlightedRegister.filter(function(o){
     if(o.intelId === intelId) {
