@@ -78,8 +78,7 @@ function toggleHighlight(el) {
   var closestParagraph = getClosest(el.parentNode, 'p')
   var intelId = getClosest(el.parentNode, 'article').querySelector('.headline-card__main h1').id.split('-')[2]
 
-  toggleHighlightElement(closestParagraph)
-  console.log('toggling highlight!');  
+  toggleHighlightElement(closestParagraph);
 
   return highlightedRegister.filter(function(o){
     if(o.intelId === intelId) {
