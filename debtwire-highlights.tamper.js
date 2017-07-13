@@ -6,6 +6,7 @@
 // @author       You
 // @match        https://www.debtwire.com/intelligence/view/*
 // @grant        none
+// @downloadURL  https://raw.githubusercontent.com/mergermarket/debtwire-highlights/master/debtwire-highlights.tamper.js
 // ==/UserScript==
 
 (function() {
