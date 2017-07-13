@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Debtwire Highlights
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  try to take over the world!
 // @author       You
 // @match        https://www.debtwire.com/intelligence/view/*
@@ -13,23 +13,31 @@
 (function() {
     'use strict';
     
-    var highlightedIndex = {
-  intelId: 0,
-  highlightedParagraphPaths: []
-}
-var highlightedRegister = []
+    // SCRIPT BELOW THIS LINE----------------------------------------------------------------
+var urlHash = window.location.hash !== ''
+var highlightedRegister = urlHash && JSON.parse(window.location.hash.split('#')[1]) || []
 var intelArticles = document.querySelectorAll('.headline-card.intel-article')
 
-intelArticles.forEach(function(articleTag) {
-  var o = Object.assign({}, highlightedIndex)
-  o.intelId = articleTag.querySelector('.headline-card__main h1').id.split('-')[2]
-  highlightedRegister.push(o)
-})
-
+if(highlightedRegister.length === 0){
+  intelArticles.forEach(function(articleTag) {
+    var o = Object.assign({}, {
+      intelId: 0,
+      highlightedParagraphPaths: []
+    })
+    o.intelId = articleTag.querySelector('.headline-card__main h1').id.split('-')[2]
+    highlightedRegister.push(o)
+  })
+} else {
+  highlightedRegister.forEach(function(article) {
+    article.highlightedParagraphPaths.forEach(function(path){
+      toggleHighlightElement(document.querySelector(path))
+    })
+  })
+}
 
 document.addEventListener('mouseup', function() {
-      // toggleHighlightElement(getSelectedText().containingElement)
-      window.location.hash = JSON.stringify(toggleHighlight(getSelectedText().containingElement))
+      toggleHighlight(getSelectedText().containingElement)
+      window.location.hash = JSON.stringify(highlightedRegister)
 }, false);
 
 function getSelectedText() {
@@ -79,15 +87,16 @@ function getDomPath(el) {
 function toggleHighlight(el) {
   var closestParagraph = getClosest(el.parentNode, 'p')
   var intelId = getClosest(el.parentNode, 'article').querySelector('.headline-card__main h1').id.split('-')[2]
+  toggleHighlightElement(closestParagraph)
 
-  toggleHighlightElement(closestParagraph);
-  console.log('toggling highlights 0.3');
-  return highlightedRegister.filter(function(o){
+  highlightedRegister.filter(function(o){
     if(o.intelId === intelId) {
+      console.log('applying updates to', o)
       togglePath(o, getDomPath(closestParagraph))
-      return o
     }
   })
+
+  return null
 
 }
 
@@ -133,6 +142,5 @@ function getClosest( elem, selector ) {
 
 };
 
-
-
+// SCRIPT ABOVE THIS LINE----------------------------------------------------------------
 })();
